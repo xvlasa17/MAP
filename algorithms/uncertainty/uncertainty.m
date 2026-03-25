@@ -99,10 +99,11 @@ public_vars.measure.LIDAR.cov = cov(public_vars.measure.LIDAR.data);
 
 figure(3)
 x=-1:0.01:1;
-plot(x,norm_pdf(x,0,public_vars.measure.GNSS.std(1)))
+plot(x,norm_pdf(x,0,public_vars.measure.GNSS.std(1)),'linewidth',2)
 hold on
-plot(x,norm_pdf(x,0,public_vars.measure.LIDAR.std(1)))
+plot(x,norm_pdf(x,0,public_vars.measure.LIDAR.std(1)),'linewidth',2)
 hold off
+legend('GNSS','LIDAR')
 
 public_vars.measure.GNSS.data
 end
