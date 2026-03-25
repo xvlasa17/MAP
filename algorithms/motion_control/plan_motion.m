@@ -8,7 +8,30 @@ target = get_target(public_vars.estimated_pose, public_vars.path);
 
 % II. Compute motion vector
 
-public_vars.motion_vector = [0.5, 0.5];
 
+
+if (read_only_vars.counter < public_vars.measure.n + 1)
+          
+    public_vars.motion_vector = [0.0, 0.0];
+
+elseif (read_only_vars.counter < public_vars.measure.n + 80)
+    public_vars.motion_vector = [0.8, 0.8];
+elseif (read_only_vars.counter < public_vars.measure.n + 91)
+    public_vars.motion_vector = [0.5, 0.8];
+elseif (read_only_vars.counter < public_vars.measure.n + 130)
+    public_vars.motion_vector = [0.8, 0.8];
+elseif (read_only_vars.counter < public_vars.measure.n + 141)
+    public_vars.motion_vector = [0.5, 0.8];
+elseif (read_only_vars.counter < public_vars.measure.n + 210)
+    public_vars.motion_vector = [0.8, 0.8];
+elseif (read_only_vars.counter < public_vars.measure.n + 221)
+    public_vars.motion_vector = [0.8, 0.5];
+elseif (read_only_vars.counter < public_vars.measure.n + 260)
+    public_vars.motion_vector = [0.8, 0.8];
+elseif (read_only_vars.counter < public_vars.measure.n + 270)
+    public_vars.motion_vector = [0.8, 0.5];
+else
+    public_vars.motion_vector = [0.8, 0.8];
+end
 
 end

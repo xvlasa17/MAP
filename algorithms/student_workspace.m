@@ -24,6 +24,8 @@ public_vars.path = plan_path(read_only_vars, public_vars);
 % 13. Plan next motion command
 public_vars = plan_motion(read_only_vars, public_vars);
 
+% 14. Uncertainty
+public_vars = uncertainty(read_only_vars, public_vars);
 
 
 end
