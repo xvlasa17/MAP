@@ -3,10 +3,8 @@ function [public_vars] = student_workspace(read_only_vars,public_vars)
 
 % 8. Perform initialization procedure
 if (read_only_vars.counter == 1)
-          
     public_vars = init_particle_filter(read_only_vars, public_vars);
     public_vars = init_kalman_filter(read_only_vars, public_vars);
-
 end
 
 % 9. Update particle filter
@@ -25,7 +23,7 @@ public_vars.path = plan_path(read_only_vars, public_vars);
 public_vars = plan_motion(read_only_vars, public_vars);
 
 % 14. Uncertainty
-public_vars = uncertainty(read_only_vars, public_vars);
+%public_vars = uncertainty(read_only_vars, public_vars);
 
 
 end

@@ -3,35 +3,27 @@ function [public_vars] = plan_motion(read_only_vars, public_vars)
 
 % I. Pick navigation target
 
+public_vars.estimated_pose = read_only_vars.mocap_pose;
+
 target = get_target(public_vars.estimated_pose, public_vars.path);
 
-
 % II. Compute motion vector
+d=read_only_vars.agent_drive.interwheel_dist;
+x=public_vars.estimated_pose(1);
+y=public_vars.estimated_pose(2);
+f=public_vars.estimated_pose(3);
 
+vector = target - [x y];
+vi = norm(vector);
+fi = wrapToPi(atan2(vector(2),vector(1))-f);
 
+a = (2*vi+fi*d);
+b = (2*vi-fi*d);
 
-if (read_only_vars.counter < public_vars.measure.n + 1)
-          
-    public_vars.motion_vector = [0.0, 0.0];
+k=max(a,b)-read_only_vars.agent_drive.max_vel;
+a = (2*vi-k+fi*d);
+b = (2*vi-k-fi*d);
 
-elseif (read_only_vars.counter < public_vars.measure.n + 80)
-    public_vars.motion_vector = [0.8, 0.8];
-elseif (read_only_vars.counter < public_vars.measure.n + 91)
-    public_vars.motion_vector = [0.5, 0.8];
-elseif (read_only_vars.counter < public_vars.measure.n + 130)
-    public_vars.motion_vector = [0.8, 0.8];
-elseif (read_only_vars.counter < public_vars.measure.n + 141)
-    public_vars.motion_vector = [0.5, 0.8];
-elseif (read_only_vars.counter < public_vars.measure.n + 210)
-    public_vars.motion_vector = [0.8, 0.8];
-elseif (read_only_vars.counter < public_vars.measure.n + 221)
-    public_vars.motion_vector = [0.8, 0.5];
-elseif (read_only_vars.counter < public_vars.measure.n + 260)
-    public_vars.motion_vector = [0.8, 0.8];
-elseif (read_only_vars.counter < public_vars.measure.n + 270)
-    public_vars.motion_vector = [0.8, 0.5];
-else
-    public_vars.motion_vector = [0.8, 0.8];
-end
-
+public_vars.motion_vector(1) = a;
+public_vars.motion_vector(2) = b;
 end
