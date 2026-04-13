@@ -8,31 +8,15 @@ for i=1:size(particles, 1)
     particles(i,:) = predict_pose(particles(i,:), public_vars.motion_vector, read_only_vars);
 end
 
-% if(read_only_vars.lidar_distances(1) < 0.5)
-%     init_new_particles = init_particle_filter(read_only_vars, public_vars);
-%     rand_init = rand(size(particles));
-% for i=1:size(particles, 1)
-%     if rand_init(i) < 0.5
-%     particles(i,:) = init_new_particles(i,:);
-%     end
-% end
-% end
-
-
 % II. Correction
 measurements = zeros(size(particles,1), length(read_only_vars.lidar_config));
 for i=1:size(particles, 1)
     measurements(i,:) = compute_lidar_measurement(read_only_vars.map, particles(i,:), read_only_vars.lidar_config);
 end
-
 weights = weight_particles(measurements, read_only_vars.lidar_distances);
 
 % III. Resampling
-particles = resample_particles(particles, weights);
-
-%Kontrola
-%compute_lidar_measurement(read_only_vars.map, read_only_vars.mocap_pose, read_only_vars.lidar_config)
-%read_only_vars.lidar_distances
+particles = resample_particles(particles, weights, read_only_vars.map.limits);
 
 
 end
