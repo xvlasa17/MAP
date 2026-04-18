@@ -7,7 +7,7 @@ public_vars.kf.R = diag([0.001, 0.001, 0.00005]);
 public_vars.kf.Q = diag([0.35 0.35]);
 
 public_vars.mu = [mean(read_only_vars.gnss_history) 0];
-public_vars.sigma = diag([std(read_only_vars.gnss_history) 2*pi]);
+public_vars.sigma = diag([std(read_only_vars.gnss_history).^2 2*pi]);
 
 end
 

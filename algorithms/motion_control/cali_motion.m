@@ -8,7 +8,7 @@ vi = 0.0;
 %     vi=-0.25;
 % end
 public_vars.motion_memory = 0.4;
-public_vars.motion_state = 0;
+public_vars.motion_state = 1;
 public_vars.motion_vector(1) = (vi+fi*d*2);
 public_vars.motion_vector(2) = (vi-fi*d*2);
 end
