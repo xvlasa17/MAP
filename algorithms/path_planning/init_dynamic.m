@@ -9,9 +9,11 @@ Value = ones(size(Map))*1e10;
 Policy = zeros(size(Map));
 
 %% ConvolutionMap
-A=[0.75 0.75 0.75;
-   0.75   1  0.75;
-   0.75 0.75 0.75;]./7;
+A=[2 2 2 2 2;
+   2 3 3 3 2;
+   2 3 4 3 2;
+   2 3 3 3 2;
+   2 2 2 2 2;]./60;
 ConvolutionMap = conv2(Map,A);
 B=[ 0   0   1   2   1   0   0;
     0   3   13  22  13  3   0;
@@ -20,9 +22,10 @@ B=[ 0   0   1   2   1   0   0;
     1   13  59  97  59  13  1;
     0   3   13  22  13  3   0; 
     0   0   1   2   1   0   0;]./1003;
-b=4;
+b=5;
 ConvolutionMap = conv2(ConvolutionMap,B);
-ConvolutionMap(ConvolutionMap>0.25)=0.25;
+offset = 0.15; 
+ConvolutionMap(ConvolutionMap>offset)=offset;
 
 figure(2);
 imagesc(ConvolutionMap);
@@ -38,17 +41,21 @@ while change == 1
     for x=1:size(Map,1)
         for y=1:size(Map,2)
             for a=1:size(Action,1)
-                x2 = x + Action(a,1);
-                y2 = y + Action(a,2);
-                if x2>=1 && y2>=1 && x2<=size(Map,1) && y2<=size(Map,2) && Map(x2,y2) ~= 1
-                    v2=Value(x2,y2)+Action(a,3)*(1/(0.25-ConvolutionMap(x2+b,y2+b)));
-                    if v2 < Value(x,y)
-                        change = 1;
-                        Value(x,y) = v2;
-                        Policy(x,y) = a;
+                x2 = x + Action([a,mod(a,8)+1,mod(a+6,8)+1,mod(a+1,8)+1,mod(a+5,8)+1],1);
+                y2 = y + Action([a,mod(a,8)+1,mod(a+6,8)+1,mod(a+1,8)+1,mod(a+5,8)+1],2);
+                if all(x2>=1) && all(y2>=1) && all(x2<=size(Map,1)) && all(y2<=size(Map,2))
+                    if all(all(Map(x2,y2) ~= 1))
+                        v2=(Value(x2(1),y2(1))+   Action(a,3)*(1/(offset-ConvolutionMap(x2(1)+b,y2(1)+b)))*0.35 + ...
+                                            Action(mod(a,8)+1,3)*(1/(offset-ConvolutionMap(x2(2)+b,y2(2)+b)))*0.225 + ...
+                                            Action(mod(a+6,8)+1,3)*(1/(offset-ConvolutionMap(x2(3)+b,y2(3)+b)))*0.225 + ...
+                                            Action(mod(a+1,8)+1,3)*(1/(offset-ConvolutionMap(x2(4)+b,y2(4)+b)))*0.1 + ...
+                                            Action(mod(a+5,8)+1,3)*(1/(offset-ConvolutionMap(x2(5)+b,y2(5)+b)))*0.1);
+                        if v2 < Value(x,y)
+                            change = 1;
+                            Value(x,y) = v2;
+                            Policy(x,y) = a;
+                        end
                     end
-%                else
-%                    Policy(x,y) = mod(a+3,8)+1 ;
                 end
             end
         end
