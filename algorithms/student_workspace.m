@@ -6,6 +6,7 @@ public_vars.counter = read_only_vars.counter;
 if (read_only_vars.counter == 1)
     public_vars.pf_enabled = 0;
     public_vars.kf_enabled = 0;
+    public_vars.planning_required = 0;
 end
 if (read_only_vars.counter == 20)
 %    public_vars = init_particle_filter(read_only_vars, public_vars);
@@ -31,9 +32,10 @@ if (read_only_vars.counter >= 20)
     public_vars.estimated_pose = estimate_pose(public_vars); % (x,y,theta)
 end
 % 12. Path planning
-if (read_only_vars.counter >= 20)
-    public_vars.path = plan_path(read_only_vars, public_vars);
+if (mod(read_only_vars.counter,100) == 20)
+    public_vars.planning_required = 1;
 end
+    public_vars = plan_path(read_only_vars, public_vars);
 % 13. Plan next motion command
 if (read_only_vars.counter <= 20)
     public_vars = cali_motion(read_only_vars, public_vars);

@@ -1,12 +1,12 @@
 function [path] = astar(read_only_vars, public_vars)
 %ASTAR Summary of this function goes here
 
-x1=1:0.2:6.5;
-y1=x1;
-a=(135:-2:0);
-x2=4.14*sqrt(2)*cos(a*pi/180)+10.14;
-y2=4*sqrt(2)*sin(a*pi/180)+2;
-path = [x1 x2;y1 y2]';
+% x1=1:0.2:6.5;
+% y1=x1;
+% a=(135:-2:0);
+% x2=4.14*sqrt(2)*cos(a*pi/180)+10.14;
+% y2=4*sqrt(2)*sin(a*pi/180)+2;
+% path = [x1 x2;y1 y2]';
 
 % y1=0:0.2:4;
 % x1=0*y1+2;
