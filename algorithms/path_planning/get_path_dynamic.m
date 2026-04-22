@@ -6,7 +6,6 @@ Policy = public_vars.policy;
 Action = public_vars.action;
 Goal = read_only_vars.discrete_map.goal;
 Map = read_only_vars.discrete_map.map';
-read_only_vars.discrete_map.limits;
 limitSizeX = read_only_vars.discrete_map.limits(3) - read_only_vars.discrete_map.limits(1);
 limitSizeY = read_only_vars.discrete_map.limits(4) - read_only_vars.discrete_map.limits(2);
 ScaleStep = [limitSizeX limitSizeY] ./ [size(Map)];
@@ -18,9 +17,13 @@ Point = Start;
 i=1;
 Path(i,:) = Point.*ScaleStep;
 while any(Goal ~= Point)
+    if (Policy(Point(1),Point(2)) == 0)
+         public_vars.planning_required = 1;
+         break;
+    end
     Point=Point+Action(Policy(Point(1),Point(2)),1:2);
     i=i+1;
-    Path(i,:) = Point.*ScaleStep;
+    Path(i,:) = Point.*ScaleStep-ScaleStep./2;
 end
 
 end
