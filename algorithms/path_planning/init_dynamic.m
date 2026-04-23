@@ -9,11 +9,11 @@ Value = ones(size(Map))*1e10;
 Policy = zeros(size(Map));
 
 %% ConvolutionMap
-A=[0 1 1 1 0;
-   1 1 1 1 1;
-   1 1 1 1 1;
-   1 1 1 1 1;
-   0 1 1 1 0;]./21;
+A=[0 2 3 2 0;
+   2 4 6 4 2;
+   3 6 9 6 3;
+   2 4 6 4 2;
+   0 2 3 2 0;]./77;
 ConvolutionMap = conv2(Map,A);
 B=[ 0   0   1   2   1   0   0;
     0   3   13  22  13  3   0;
@@ -33,8 +33,8 @@ B=[ 0   0   1   2   1   0   0;
 %     1 5 14 28 35 28 14 5 1;]./17249;
 b=5;
 ConvolutionMap = conv2(ConvolutionMap,B);
-offset = 0.135; 
-ConvolutionMap(ConvolutionMap>offset)=offset;
+offset = 0.125; %0.135 
+ConvolutionMap(ConvolutionMap>offset)=offset - 1e-6;
 
 figure(2);
 imagesc(ConvolutionMap);

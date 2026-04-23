@@ -15,10 +15,10 @@ if (public_vars.init_particle_required)
     public_vars.pf_enabled = 1;
 end
 if (read_only_vars.counter == 20)
-    public_vars = init_particle_filter(read_only_vars, public_vars);
+%    public_vars = init_particle_filter(read_only_vars, public_vars);
 %    public_vars = init_kalman_filter(read_only_vars, public_vars);
 %    public_vars.kf.R = diag([0.01, 0.01, 0.05]);
-    public_vars.pf_enabled = 1;
+%    public_vars.pf_enabled = 1;
 %    public_vars.kf_enabled = 1;
 end
 if (read_only_vars.counter == 30)
@@ -26,7 +26,7 @@ if (read_only_vars.counter == 30)
 end
 
 % 9. Update particle filter
-if (read_only_vars.counter >= 20 && public_vars.pf_enabled)
+if (public_vars.pf_enabled)
     public_vars.particles = update_particle_filter(read_only_vars, public_vars);
 end
 % 10. Update Kalman filter
