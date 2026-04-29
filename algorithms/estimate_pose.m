@@ -11,6 +11,9 @@ end
 if(public_vars.kf_enabled)
     estimated_pose = public_vars.mu';
 end
+if (any(~isfinite(estimated_pose)))
+    estimated_pose = public_vars.estimated_pose;
+end
 
 end
 

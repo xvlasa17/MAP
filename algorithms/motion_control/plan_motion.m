@@ -58,6 +58,9 @@ switch public_vars.motion_state
         vi = max([read_only_vars.agent_drive.max_vel/2-abs(fi*d*2),0]);
     case 3 % Pomale otaceni podel steny
         fi=pi/4*sign(read_only_vars.lidar_distances(1,1)-read_only_vars.lidar_distances(1,size(read_only_vars.lidar_distances,2)));
+        if (~isfinite(fi))
+            fi = pi/4;
+        end
         vi=0.50;
     case 4 % Otaceni pred prekazkou
         if(change)
@@ -71,8 +74,7 @@ switch public_vars.motion_state
         vi=0.0;
 end
 
-
-public_vars.motion_state
 public_vars.motion_vector(1) = (vi+fi*d*2);
 public_vars.motion_vector(2) = (vi-fi*d*2);
+
 end

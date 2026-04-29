@@ -36,8 +36,8 @@ ConvolutionMap = conv2(ConvolutionMap,B);
 offset = 0.125; %0.135 
 ConvolutionMap(ConvolutionMap>offset)=offset - 1e-6;
 
-figure(2);
-imagesc(ConvolutionMap);
+%figure(2);
+%imagesc(ConvolutionMap);
 
 
 %% Dynamic path planning
@@ -71,8 +71,8 @@ while change == 1
     end
 end
 
-figure(3);
-imagesc(Policy);
+%figure(3);
+%imagesc(Policy);
 public_vars.policy = Policy;
 end
 
