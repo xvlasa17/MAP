@@ -51,10 +51,10 @@ end
 
 switch public_vars.motion_state
     case 1 % Normalni stav
-        fi = wrapToPi(atan2(vector(2),vector(1))-pose(3));
+        fi = mod(atan2(vector(2),vector(1))-pose(3)+pi,2*pi)-pi;
         vi = max([read_only_vars.agent_drive.max_vel-abs(fi*d*2),0]);
     case 2 % Zpomaleni
-        fi = wrapToPi(atan2(vector(2),vector(1))-pose(3));
+        fi = mod(atan2(vector(2),vector(1))-pose(3)+pi,2*pi)-pi;
         vi = max([read_only_vars.agent_drive.max_vel/2-abs(fi*d*2),0]);
     case 3 % Pomale otaceni podel steny
         fi=pi/4*sign(read_only_vars.lidar_distances(1,1)-read_only_vars.lidar_distances(1,size(read_only_vars.lidar_distances,2)));
