@@ -6,5 +6,4 @@ addpath algorithms/motion_control/;
 addpath algorithms/particle_filter/;
 addpath algorithms/kalman_filter/;
 addpath algorithms/path_planning/;
-addpath algorithms/uncertainty/;
 

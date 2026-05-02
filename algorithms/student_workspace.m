@@ -61,7 +61,7 @@ if ((read_only_vars.counter >= 20 || public_vars.pf_enabled) && change == 0)
     public_vars.estimated_pose = estimate_pose(public_vars); % (x,y,theta)
 end
 
-public_vars.estimated_pose
+%public_vars.estimated_pose
 
 % 12. Path planning
 if ((read_only_vars.counter == 20 || (read_only_vars.counter == 1 && public_vars.pf_enabled)))
@@ -92,7 +92,7 @@ if (norm(read_only_vars.map.goal-public_vars.estimated_pose(1:2)) < read_only_va
 end
 end
 
-[public_vars.motion_state public_vars.motion_vector public_vars.kf_enabled public_vars.pf_enabled public_vars.estimated_pose]
+%[public_vars.motion_state public_vars.motion_vector public_vars.kf_enabled public_vars.pf_enabled public_vars.estimated_pose]
 
 end
 
