@@ -5,16 +5,18 @@ function [public_vars] = init_dynamic(read_only_vars, public_vars)
 Action = public_vars.action;
 Goal = read_only_vars.discrete_map.goal;
 Map = read_only_vars.discrete_map.map';
-Value = ones(size(Map))*1e10;
+MaxValue = 1e100;
+Value = ones(size(Map))*MaxValue;
 Policy = zeros(size(Map));
 
 %% ConvolutionMap
-A=[0 2 3 2 0;
-   2 4 6 4 2;
-   3 6 9 6 3;
-   2 4 6 4 2;
-   0 2 3 2 0;]./77;
-ConvolutionMap = conv2(Map,A);
+A=[  3     3     2     2     2     3     3;
+     3     2     0     0     0     2     3;
+     2     0    15    27    15     0     2;
+     2     0    27    43    27     0     2;
+     2     0    15    27    15     0     2;
+     3     2     0     0     0     2     3;
+     3     3     2     2     2     3     3]./279;
 B=[ 0   0   1   2   1   0   0;
     0   3   13  22  13  3   0;
     1   13  59  97  59  13  1;
@@ -31,13 +33,14 @@ B=[ 0   0   1   2   1   0   0;
 %     14 68 207 403 504 403 207 68 14;
 %     5 22 68 133 166 133 68 22 5;
 %     1 5 14 28 35 28 14 5 1;]./17249;
-b=5;
+b=6;
+ConvolutionMap = conv2(Map,A);
 ConvolutionMap = conv2(ConvolutionMap,B);
-offset = 0.125; %0.135 
-ConvolutionMap(ConvolutionMap>offset)=offset - 1e-6;
+offset = 0.125; %0.135 0.125
+ConvolutionMap(ConvolutionMap>offset)=offset - 1/MaxValue;
 
-%figure(2);
-%imagesc(ConvolutionMap);
+% figure(2);
+% imagesc(ConvolutionMap);
 
 
 %% Dynamic path planning
@@ -53,7 +56,7 @@ while change == 1
                 x2 = x + Action([a,mod(a,8)+1,mod(a+6,8)+1,mod(a+1,8)+1,mod(a+5,8)+1],1);
                 y2 = y + Action([a,mod(a,8)+1,mod(a+6,8)+1,mod(a+1,8)+1,mod(a+5,8)+1],2);
                 if all(x2>=1) && all(y2>=1) && all(x2<=size(Map,1)) && all(y2<=size(Map,2))
-                    if all(all(Map(x2,y2) ~= 1))
+                    %if all(all(Map(x2,y2) ~= 1))
                         v2=(Value(x2(1),y2(1))+   Action(a,3)*(1/(offset-ConvolutionMap(x2(1)+b,y2(1)+b)))*0.35 + ...
                                             Action(mod(a,8)+1,3)*(1/(offset-ConvolutionMap(x2(2)+b,y2(2)+b)))*0.225 + ...
                                             Action(mod(a+6,8)+1,3)*(1/(offset-ConvolutionMap(x2(3)+b,y2(3)+b)))*0.225 + ...
@@ -64,15 +67,15 @@ while change == 1
                             Value(x,y) = v2;
                             Policy(x,y) = a;
                         end
-                    end
+                    %end
                 end
             end
         end
     end
 end
 
-%figure(3);
-%imagesc(Policy);
+% figure(3);
+% imagesc(Policy);
 public_vars.policy = Policy;
 end
 

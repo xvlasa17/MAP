@@ -9,7 +9,11 @@ target = get_target(pose, public_vars.path);
 % II. Compute motion vector
 d=read_only_vars.agent_drive.interwheel_dist;
 %public_vars.motion_state = 1;
-vector = target - [pose(1) pose(2)];
+if(all(isfinite(target)))
+    vector = target - [pose(1) pose(2)];
+else
+    vector = pose(3);
+end
 change = 0;
 
 % Stavovy automat ovladani robota podle senzoru
@@ -57,9 +61,21 @@ switch public_vars.motion_state
         fi = mod(atan2(vector(2),vector(1))-pose(3)+pi,2*pi)-pi;
         vi = max([read_only_vars.agent_drive.max_vel/2-abs(fi*d*2),0]);
     case 3 % Pomale otaceni podel steny
-        fi=pi/4*sign(read_only_vars.lidar_distances(1,1)-read_only_vars.lidar_distances(1,size(read_only_vars.lidar_distances,2)));
-        if (~isfinite(fi))
-            fi = pi/4;
+        if(change)
+        if all([isfinite(read_only_vars.lidar_distances(1,1)),isfinite(read_only_vars.lidar_distances(1,size(read_only_vars.lidar_distances,2)))])
+                fi=pi/4*sign(read_only_vars.lidar_distances(1,1)-read_only_vars.lidar_distances(1,size(read_only_vars.lidar_distances,2)));
+        else
+            if (~isfinite(read_only_vars.lidar_distances(1,1)))
+                fi=pi/4;
+            else
+                fi=-pi/4;
+            end
+        end
+        else
+            fi=pi/4*sign(public_vars.motion_vector(1)-public_vars.motion_vector(2));
+            if (fi == 0)
+                fi=pi/4;
+            end
         end
         vi=0.50;
     case 4 % Otaceni pred prekazkou
