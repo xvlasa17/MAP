@@ -22,6 +22,9 @@ while any(Goal ~= Point)
          break;
     end
     Point=Point+Action(Policy(Point(1),Point(2)),1:2);
+    if(Point(1) <= 0 || Point(2) <= 0 || Point(1) > size(public_vars.policy,1) || Point(2) > size(public_vars.policy,2))
+        break;
+    end
     i=i+1;
     Path(i,:) = Point.*ScaleStep-ScaleStep./2;
 end

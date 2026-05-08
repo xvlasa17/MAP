@@ -11,7 +11,7 @@ public_vars.kf.Q = diag([0.35 0.35]);
 %public_vars.sigma = diag([std(read_only_vars.gnss_history).^2 2*pi]);
 
 public_vars.mu = public_vars.estimated_pose;
-public_vars.sigma = diag([0.01 0.01 0.01]);
+public_vars.sigma = diag([0.01 0.01 0.005]);
 
 end
 

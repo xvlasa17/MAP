@@ -6,6 +6,7 @@ change = 0;
 if (read_only_vars.counter == 1)
     public_vars.pf_enabled = 0;
     public_vars.kf_enabled = 0;
+    public_vars.lost = 0;
 end
 
 pf_enabled_old = public_vars.pf_enabled;
@@ -20,14 +21,29 @@ else
 end
 
 if(public_vars.pf_enabled == 1 && pf_enabled_old == 0 && read_only_vars.counter > 20)
-    public_vars = set_init_particle_filter(read_only_vars,public_vars);
+    if(public_vars.lost)
+        public_vars = init_particle_filter(read_only_vars,public_vars);
+    else
+        public_vars = set_init_particle_filter(read_only_vars,public_vars);
+    end
     change=1;
 end
 
 if(public_vars.kf_enabled == 1 && kf_enabled_old == 0 && read_only_vars.counter > 20)
-    public_vars = set_init_kalman_filter(read_only_vars,public_vars);
+    if(public_vars.lost)
+        public_vars = init_kalman_filter(read_only_vars,public_vars);
+    else
+        public_vars = set_init_kalman_filter(read_only_vars,public_vars);
+    end
     change=1;
 end
+
+if(public_vars.kf_enabled == 1 && read_only_vars.counter > 20 && norm(read_only_vars.gnss_position - public_vars.estimated_pose(1:2)) > 2.0)
+    public_vars.lost = 1;
+    public_vars = init_kalman_filter(read_only_vars,public_vars);
+end
+
+
 
 % 8. Perform initialization procedure
 if (read_only_vars.counter == 1)
@@ -77,6 +93,14 @@ public_vars = plan_path(read_only_vars, public_vars);
 if (read_only_vars.counter <= 20 && public_vars.kf_enabled)
     public_vars = cali_motion(read_only_vars, public_vars);
 else
+    if(size(public_vars.path,1) == 1)
+        public_vars.lost = 1;
+        if(rand() > 0.95)
+            public_vars.init_particle_required = 1;
+        end
+    else
+        public_vars.lost = 0;
+    end
     public_vars = plan_motion(read_only_vars, public_vars);
 end
 
