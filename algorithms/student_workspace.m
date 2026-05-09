@@ -30,6 +30,7 @@ if(public_vars.pf_enabled == 1 && pf_enabled_old == 0 && read_only_vars.counter 
 end
 
 if(public_vars.kf_enabled == 1 && kf_enabled_old == 0 && read_only_vars.counter > 20)
+    public_vars.last_gnss_position = read_only_vars.gnss_position;
     if(public_vars.lost)
         public_vars = init_kalman_filter(read_only_vars,public_vars);
     else
@@ -38,7 +39,7 @@ if(public_vars.kf_enabled == 1 && kf_enabled_old == 0 && read_only_vars.counter 
     change=1;
 end
 
-if(public_vars.kf_enabled == 1 && read_only_vars.counter > 20 && norm(read_only_vars.gnss_position - public_vars.estimated_pose(1:2)) > 2.0)
+if(public_vars.kf_enabled == 1 && read_only_vars.counter > 20 && norm(mean([read_only_vars.gnss_position;public_vars.last_gnss_position]) - public_vars.estimated_pose(1:2)) > 1.5)
     public_vars.lost = 1;
     public_vars = init_kalman_filter(read_only_vars,public_vars);
 end
@@ -115,6 +116,8 @@ if (norm(read_only_vars.map.goal-public_vars.estimated_pose(1:2)) < read_only_va
     end
 end
 end
+
+public_vars.last_gnss_position = read_only_vars.gnss_position;
 
 %[public_vars.motion_state public_vars.motion_vector public_vars.kf_enabled public_vars.pf_enabled public_vars.estimated_pose]
 

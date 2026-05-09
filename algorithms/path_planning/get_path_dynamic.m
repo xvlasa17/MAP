@@ -16,15 +16,17 @@ Start = round(public_vars.estimated_pose(1,1:2) ./ ScaleStep);
 Point = Start;
 i=1;
 Path(i,:) = Point.*ScaleStep;
-while any(Goal ~= Point)
+while any(Goal ~= Point) && size(Path,1) < 1e3
+    set=round(min(size(public_vars.policy))/4*rand);
+    Point(Point<=1) = 1+set; 
+    Max = size(public_vars.policy)-set;
+    Point((Point>=size(public_vars.policy))) = Max(Point>=size(public_vars.policy));
     if (Policy(Point(1),Point(2)) == 0)
          public_vars.planning_required = 1;
+         Point = Goal;
          break;
     end
     Point=Point+Action(Policy(Point(1),Point(2)),1:2);
-    if(Point(1) <= 0 || Point(2) <= 0 || Point(1) > size(public_vars.policy,1) || Point(2) > size(public_vars.policy,2))
-        break;
-    end
     i=i+1;
     Path(i,:) = Point.*ScaleStep-ScaleStep./2;
 end
